@@ -285,7 +285,7 @@ google_service_account = "/path/to/service-account.json"
 
 ## Contributing
 
-Contributions are welcome. See [AGENTS.md](AGENTS.md) for code conventions and project structure.
+Contributions are welcome.
 
 ```sh
 git clone https://github.com/fbonesso/storeops.git

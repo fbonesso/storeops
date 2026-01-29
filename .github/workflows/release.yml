@@ -113,9 +113,22 @@ jobs:
       - name: List assets
         run: ls -R artifacts/
 
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          version="${tag#v}"
+          # Extract the section for this version from CHANGELOG.md
+          body=$(awk "/^## \[${version}\]/{found=1; next} /^## \[/{if(found) exit} found{print}" CHANGELOG.md)
+          {
+            echo "BODY<<CHANGELOG_EOF"
+            echo "$body"
+            echo "CHANGELOG_EOF"
+          } >> "$GITHUB_ENV"
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          generate_release_notes: true
+          body: ${{ env.BODY }}
           make_latest: true
           files: artifacts/*
