@@ -78,17 +78,15 @@ main() {
   if [ -w "$install_dir" ]; then
     cp "${tmpdir}/storeops" "${install_dir}/storeops"
     chmod +x "${install_dir}/storeops"
-    ln -sf "${install_dir}/storeops" "${install_dir}/st"
   else
     echo "Need elevated permissions to install to ${install_dir}"
     sudo cp "${tmpdir}/storeops" "${install_dir}/storeops"
     sudo chmod +x "${install_dir}/storeops"
-    sudo ln -sf "${install_dir}/storeops" "${install_dir}/st"
   fi
 
   echo "Installed storeops ${version} to ${install_dir}"
   echo ""
-  echo "Run 'storeops --help' or 'st --help' to get started."
+  echo "Run 'storeops --help' to get started."
 }
 
 main

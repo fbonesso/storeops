@@ -32,9 +32,7 @@ pub async fn handle(
 ) -> Result<Value, Box<dyn std::error::Error>> {
     match cmd {
         ReviewsCommand::List { package_name, .. } => {
-            client
-                .get(&format!("/{package_name}/reviews"), &[])
-                .await
+            client.get(&format!("/{package_name}/reviews"), &[]).await
         }
         ReviewsCommand::Reply {
             review_id,

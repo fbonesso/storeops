@@ -29,9 +29,9 @@
 ```sh
 curl -fsSL https://raw.githubusercontent.com/fbonesso/storeops/main/install.sh | sh
 
-st auth init
-st auth login --store apple --key-id XXXX --issuer-id XXXX --key-path /path/to/AuthKey.p8
-st apple apps list
+storeops auth init
+storeops auth login --store apple --key-id XXXX --issuer-id XXXX --key-path /path/to/AuthKey.p8
+storeops apple apps list
 ```
 
 ## Installation
@@ -42,7 +42,7 @@ st apple apps list
 curl -fsSL https://raw.githubusercontent.com/fbonesso/storeops/main/install.sh | sh
 ```
 
-This detects your OS and architecture, downloads the latest release, and installs `storeops` (with `st` symlink) to `/usr/local/bin`.
+This detects your OS and architecture, downloads the latest release, and installs `storeops` to `/usr/local/bin`.
 
 To install a specific version or to a custom directory:
 
@@ -72,7 +72,6 @@ git clone https://github.com/fbonesso/storeops.git
 cd storeops
 cargo build --release
 cp target/release/storeops /usr/local/bin/
-ln -sf /usr/local/bin/storeops /usr/local/bin/st
 ```
 
 ## Authentication
@@ -102,9 +101,9 @@ export STOREOPS_GOOGLE_SERVICE_ACCOUNT="/path/to/service-account.json"
 You can configure multiple profiles in `~/.config/storeops/config.toml` and switch between them:
 
 ```sh
-st auth init              # Interactive setup for a new profile
-st auth switch production # Switch active profile
-st auth status            # Show current auth status
+storeops auth init              # Interactive setup for a new profile
+storeops auth switch production # Switch active profile
+storeops auth status            # Show current auth status
 ```
 
 ## Usage
@@ -113,73 +112,73 @@ st auth status            # Show current auth status
 
 ```sh
 # List apps
-st apple apps list
+storeops apple apps list
 
 # Get app metadata
-st apple metadata get --app-id 123456789
+storeops apple metadata get --app-id 123456789
 
 # Upload a screenshot
-st apple screenshots upload --app-id 123456789 --locale en-US --display-type APP_IPHONE_67 --file screenshot.png
+storeops apple screenshots upload --app-id 123456789 --locale en-US --display-type APP_IPHONE_67 --file screenshot.png
 
 # Submit a build for review
-st apple submit --app-id 123456789 --build-number 42
+storeops apple submit --app-id 123456789 --build-number 42
 
 # Check review status
-st apple versions list --app-id 123456789
+storeops apple versions list --app-id 123456789
 
 # Manage TestFlight beta testers
-st apple testflight groups list --app-id 123456789
-st apple testflight testers add --app-id 123456789 --group-id G1 --email user@example.com
+storeops apple testflight groups list --app-id 123456789
+storeops apple testflight testers add --app-id 123456789 --group-id G1 --email user@example.com
 
 # Start a phased release
-st apple phased-release enable --app-id 123456789 --version-id V1
+storeops apple phased-release enable --app-id 123456789 --version-id V1
 
 # List in-app purchases
-st apple iap list --app-id 123456789
+storeops apple iap list --app-id 123456789
 
 # Fetch analytics
-st apple analytics get --app-id 123456789 --metric downloads --start 2025-01-01 --end 2025-01-31
+storeops apple analytics get --app-id 123456789 --metric downloads --start 2025-01-01 --end 2025-01-31
 ```
 
 ### Google workflows
 
 ```sh
 # List apps
-st google apps list
+storeops google apps list
 
 # Update a store listing
-st google listings update --package com.example.app --locale en-US --title "My App"
+storeops google listings update --package com.example.app --locale en-US --title "My App"
 
 # Upload a build to a track
-st google builds upload --package com.example.app --track internal --file app.aab
+storeops google builds upload --package com.example.app --track internal --file app.aab
 
 # Promote to production
-st google submit --package com.example.app --track production --build-number 42
+storeops google submit --package com.example.app --track production --build-number 42
 
 # Read reviews
-st google reviews list --package com.example.app
+storeops google reviews list --package com.example.app
 
 # Fetch sales reports
-st google reports sales --package com.example.app --month 2025-01
+storeops google reports sales --package com.example.app --month 2025-01
 ```
 
 ### Output formats
 
 ```sh
 # JSON (default)
-st apple apps list
+storeops apple apps list
 
 # Table format
-st apple apps list --output table
+storeops apple apps list --output table
 
 # Markdown
-st apple apps list --output markdown
+storeops apple apps list --output markdown
 
 # Pretty-print JSON
-st apple apps list --pretty
+storeops apple apps list --pretty
 
 # Paginate through all results
-st apple reviews list --app-id 123456789 --paginate
+storeops apple reviews list --app-id 123456789 --paginate
 ```
 
 ## Agent Integration
@@ -197,15 +196,15 @@ Example agent usage:
 
 ```sh
 # An agent can reliably parse the output
-APPS=$(st apple apps list --output json)
+APPS=$(storeops apple apps list --output json)
 APP_ID=$(echo "$APPS" | jq -r '.[0].id')
-st apple reviews list --app-id "$APP_ID" --limit 10 --output json
+storeops apple reviews list --app-id "$APP_ID" --limit 10 --output json
 ```
 
 ## Command Reference
 
 ```
-storeops (st)
+storeops
 |
 +-- auth
 |   +-- init           Initialize configuration and credentials

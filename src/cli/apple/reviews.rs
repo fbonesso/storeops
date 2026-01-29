@@ -51,10 +51,7 @@ pub async fn handle(
                 query.push(("filter[rating]", &rating_str));
             }
             client
-                .get(
-                    &format!("/apps/{app_id}/customerReviews"),
-                    &query,
-                )
+                .get(&format!("/apps/{app_id}/customerReviews"), &query)
                 .await
         }
         ReviewsCommand::Respond { review_id, body } => {

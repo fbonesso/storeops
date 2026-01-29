@@ -37,8 +37,14 @@ mod tests {
     #[test]
     fn render_list_produces_table_with_multiple_rows() {
         let rows = vec![
-            TestRow { name: "a".to_string(), value: 1 },
-            TestRow { name: "b".to_string(), value: 2 },
+            TestRow {
+                name: "a".to_string(),
+                value: 1,
+            },
+            TestRow {
+                name: "b".to_string(),
+                value: 2,
+            },
         ];
         let output = render_list(&rows);
         assert!(output.contains("a"));

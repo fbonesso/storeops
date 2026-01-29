@@ -2,7 +2,7 @@
 
 ## What is StoreOps
 
-StoreOps (`storeops` / `st`) is a CLI for managing the full App Store Connect and Google Play Store lifecycle. It outputs JSON by default, accepts all input via flags (no interactive prompts), and returns structured errors on stderr.
+StoreOps (`storeops`) is a CLI for managing the full App Store Connect and Google Play Store lifecycle. It outputs JSON by default, accepts all input via flags (no interactive prompts), and returns structured errors on stderr.
 
 ## Installation
 
@@ -13,7 +13,7 @@ curl -fsSL https://raw.githubusercontent.com/fbonesso/storeops/main/install.sh |
 Or update an existing install:
 
 ```bash
-st update
+storeops update
 ```
 
 ## Authentication
@@ -22,22 +22,22 @@ Before running any store command, set up credentials:
 
 ```bash
 # Apple (App Store Connect API key)
-st auth login --store apple \
+storeops auth login --store apple \
   --key-id XXXXXXXXXX \
   --issuer-id XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX \
   --key-path /path/to/AuthKey.p8 \
   --name my-apple
 
 # Google (service account)
-st auth login --store google \
+storeops auth login --store google \
   --service-account /path/to/service-account.json \
   --name my-google
 
 # Check status
-st auth status
+storeops auth status
 
 # Switch profile
-st auth switch my-apple
+storeops auth switch my-apple
 ```
 
 Credentials can also be set via environment variables:
@@ -48,7 +48,7 @@ Use `--profile <name>` on any command to override the active profile.
 
 ## Command Pattern
 
-All commands follow: `st <store> <resource> <action> [flags]`
+All commands follow: `storeops <store> <resource> <action> [flags]`
 
 Actions are consistent across resources: `list`, `info`/`get`, `create`, `update`, `delete`.
 
@@ -80,8 +80,8 @@ Actions are consistent across resources: `list`, `info`/`get`, `create`, `update
 Always parse JSON output to extract IDs for downstream commands:
 
 ```bash
-APP_ID=$(st apple apps list | jq -r '.data[0].id')
-st apple versions list --app-id "$APP_ID"
+APP_ID=$(storeops apple apps list | jq -r '.data[0].id')
+storeops apple versions list --app-id "$APP_ID"
 ```
 
 ## Core Workflows
@@ -89,93 +89,93 @@ st apple versions list --app-id "$APP_ID"
 ### Publish an iOS Version
 
 ```bash
-st apple apps list
-st apple builds list --app-id APP_ID --limit 5
-st apple versions create --app-id APP_ID --version "2.1.0" --platform ios
-st apple metadata localizations update --version-id VER_ID --locale en-US \
+storeops apple apps list
+storeops apple builds list --app-id APP_ID --limit 5
+storeops apple versions create --app-id APP_ID --version "2.1.0" --platform ios
+storeops apple metadata localizations update --version-id VER_ID --locale en-US \
   --whats-new "Bug fixes." --description "The best app."
-st apple versions update --version-id VER_ID --build-id BUILD_ID
-st apple submit APP_ID --version "2.1.0"
+storeops apple versions update --version-id VER_ID --build-id BUILD_ID
+storeops apple submit APP_ID --version "2.1.0"
 ```
 
 ### Publish to Google Play
 
 ```bash
-st google builds upload --app-id com.example.app --file app-release.aab
-st google tracks update --app-id com.example.app --track production \
+storeops google builds upload --app-id com.example.app --file app-release.aab
+storeops google tracks update --app-id com.example.app --track production \
   --version-code 42 --rollout-fraction 0.1
-st google listings update --app-id com.example.app --locale en-US \
+storeops google listings update --app-id com.example.app --locale en-US \
   --title "My App" --short-description "Short." --full-description "Full."
-st google submit --app-id com.example.app
+storeops google submit --app-id com.example.app
 ```
 
 ### Upload Screenshots (Apple)
 
 ```bash
-st apple screenshots sets list --version-id VER_ID --locale en-US
-st apple screenshots sets create --version-id VER_ID --locale en-US \
+storeops apple screenshots sets list --version-id VER_ID --locale en-US
+storeops apple screenshots sets create --version-id VER_ID --locale en-US \
   --display-type APP_IPHONE_67
-st apple screenshots images upload --set-id SET_ID --file screenshot.png
+storeops apple screenshots images upload --set-id SET_ID --file screenshot.png
 ```
 
 ### Upload Images (Google)
 
 ```bash
-st google images upload --app-id com.example.app --locale en-US \
+storeops google images upload --app-id com.example.app --locale en-US \
   --image-type phoneScreenshots --file screenshot.png
 ```
 
 ### Manage TestFlight
 
 ```bash
-st apple testflight groups list --app-id APP_ID
-st apple testflight testers add --group-id GROUP_ID \
+storeops apple testflight groups list --app-id APP_ID
+storeops apple testflight testers add --group-id GROUP_ID \
   --email tester@example.com --first-name Jane --last-name Doe
 ```
 
 ### In-App Purchases
 
 ```bash
-st apple iap list --app-id APP_ID
-st apple iap create --app-id APP_ID --product-id com.example.coins100 \
+storeops apple iap list --app-id APP_ID
+storeops apple iap create --app-id APP_ID --product-id com.example.coins100 \
   --type consumable --reference-name "100 Coins"
-st apple iap localizations create --iap-id IAP_ID --locale en-US \
+storeops apple iap localizations create --iap-id IAP_ID --locale en-US \
   --display-name "100 Coins" --description "Buy 100 coins"
-st apple iap submit --iap-id IAP_ID
+storeops apple iap submit --iap-id IAP_ID
 ```
 
 ### Reviews
 
 ```bash
-st apple reviews list --app-id APP_ID --limit 20
-st apple reviews respond --review-id REV_ID --response "Thanks!"
+storeops apple reviews list --app-id APP_ID --limit 20
+storeops apple reviews respond --review-id REV_ID --response "Thanks!"
 
-st google reviews list --app-id com.example.app
-st google reviews reply --review-id REV_ID --reply "Thank you!"
+storeops google reviews list --app-id com.example.app
+storeops google reviews reply --review-id REV_ID --reply "Thank you!"
 ```
 
 ### Pricing and Availability
 
 ```bash
-st apple pricing get --app-id APP_ID
-st apple pricing set --app-id APP_ID --price-point POINT_ID
-st apple availability set --app-id APP_ID --territories US,GB,DE,JP
+storeops apple pricing get --app-id APP_ID
+storeops apple pricing set --app-id APP_ID --price-point POINT_ID
+storeops apple availability set --app-id APP_ID --territories US,GB,DE,JP
 ```
 
 ### Phased Release
 
 ```bash
-st apple phased-release create --version-id VER_ID
-st apple phased-release update --version-id VER_ID --state PAUSE
-st apple phased-release delete --version-id VER_ID
+storeops apple phased-release create --version-id VER_ID
+storeops apple phased-release update --version-id VER_ID --state PAUSE
+storeops apple phased-release delete --version-id VER_ID
 ```
 
 ## Error Handling
 
 When a command fails:
 1. Check the exit code (2 = auth, 3 = API, 4 = network).
-2. Parse the JSON error from stderr: `st ... 2>&1 | jq '.error'`
-3. For auth errors, run `st auth status` and re-login if needed.
+2. Parse the JSON error from stderr: `storeops ... 2>&1 | jq '.error'`
+3. For auth errors, run `storeops auth status` and re-login if needed.
 4. For rate limits (HTTP 429), wait and retry.
 
 ## Tips for Agents

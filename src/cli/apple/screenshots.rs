@@ -121,9 +121,7 @@ async fn handle_sets(
             client.post("/appScreenshotSets", &body).await
         }
         SetsCommand::Delete { set_id } => {
-            client
-                .delete(&format!("/appScreenshotSets/{set_id}"))
-                .await
+            client.delete(&format!("/appScreenshotSets/{set_id}")).await
         }
     }
 }
@@ -181,7 +179,8 @@ async fn handle_images(
                     let url = op["url"].as_str().ok_or("missing upload url")?;
                     let offset = op["offset"].as_u64().unwrap_or(0) as usize;
                     let length = op["length"].as_u64().unwrap_or(file_bytes.len() as u64) as usize;
-                    let chunk = &file_bytes[offset..std::cmp::min(offset + length, file_bytes.len())];
+                    let chunk =
+                        &file_bytes[offset..std::cmp::min(offset + length, file_bytes.len())];
 
                     let mut req = reqwest::Client::new().put(url);
                     if let Some(headers) = op["requestHeaders"].as_array() {
@@ -209,10 +208,7 @@ async fn handle_images(
                 }
             });
             client
-                .patch(
-                    &format!("/appScreenshots/{screenshot_id}"),
-                    &commit_body,
-                )
+                .patch(&format!("/appScreenshots/{screenshot_id}"), &commit_body)
                 .await
         }
         ImagesCommand::Delete { screenshot_id } => {

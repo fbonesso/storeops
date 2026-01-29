@@ -30,10 +30,7 @@ fn print_banner() {
         "help".bold().bright_yellow(),
         "exit".bold().bright_yellow()
     );
-    println!(
-        "  {}",
-        "─".repeat(60).dimmed()
-    );
+    println!("  {}", "─".repeat(60).dimmed());
     println!();
 }
 
@@ -44,11 +41,7 @@ fn build_prompt() -> String {
     };
 
     if profile.is_empty() {
-        format!(
-            "{} {} ",
-            "storeops".bold().bright_cyan(),
-            "›".bright_cyan()
-        )
+        format!("{} {} ", "storeops".bold().bright_cyan(), "›".bright_cyan())
     } else {
         format!(
             "{} {} {} ",

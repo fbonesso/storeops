@@ -108,10 +108,7 @@ async fn handle_testers(
             let limit_str = limit.unwrap_or(50).to_string();
             query.push(("limit", limit_str.as_str()));
             client
-                .get(
-                    &format!("/betaGroups/{group_id}/betaTesters"),
-                    &query,
-                )
+                .get(&format!("/betaGroups/{group_id}/betaTesters"), &query)
                 .await
         }
         TestersCommand::Add { group_id, email } => {

@@ -23,9 +23,7 @@ struct TokenResponse {
     access_token: String,
 }
 
-pub async fn get_access_token(
-    sa_path: &str,
-) -> Result<String, Box<dyn std::error::Error>> {
+pub async fn get_access_token(sa_path: &str) -> Result<String, Box<dyn std::error::Error>> {
     let content = std::fs::read_to_string(sa_path)?;
     let sa: ServiceAccount = serde_json::from_str(&content)?;
 

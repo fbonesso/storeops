@@ -136,7 +136,7 @@ pub async fn check_for_update_background() {
     let remote = normalize_version(&release.tag_name);
     if is_newer(remote, CURRENT_VERSION) {
         eprintln!(
-            "A new version of storeops is available: {} -> {} (run `st update` to upgrade)",
+            "A new version of storeops is available: {} -> {} (run `storeops update` to upgrade)",
             CURRENT_VERSION, remote
         );
     }
@@ -155,10 +155,7 @@ pub async fn handle_update() -> Result<Value, Box<dyn std::error::Error>> {
         }));
     }
 
-    eprintln!(
-        "Updating storeops: {} -> {}",
-        CURRENT_VERSION, remote
-    );
+    eprintln!("Updating storeops: {} -> {}", CURRENT_VERSION, remote);
 
     let target = detect_target();
     let asset = find_asset_for_target(&release.assets, &target)
@@ -215,8 +212,6 @@ pub async fn handle_update() -> Result<Value, Box<dyn std::error::Error>> {
             {
                 use std::os::unix::fs::PermissionsExt;
                 let _ = std::fs::set_permissions(&dest, std::fs::Permissions::from_mode(0o755));
-                let alias = install_dir.join("st");
-                let _ = std::os::unix::fs::symlink(&dest, &alias);
             }
         }
         Err(e) => {

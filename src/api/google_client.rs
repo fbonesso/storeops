@@ -69,11 +69,7 @@ impl GoogleClient {
         Ok(resp.json().await?)
     }
 
-    pub async fn put(
-        &self,
-        path: &str,
-        body: &Value,
-    ) -> Result<Value, Box<dyn std::error::Error>> {
+    pub async fn put(&self, path: &str, body: &Value) -> Result<Value, Box<dyn std::error::Error>> {
         let url = format!("{BASE_URL}{path}");
         let resp = self
             .client
@@ -91,10 +87,7 @@ impl GoogleClient {
         Ok(resp.json().await?)
     }
 
-    pub async fn delete_path(
-        &self,
-        path: &str,
-    ) -> Result<Value, Box<dyn std::error::Error>> {
+    pub async fn delete_path(&self, path: &str) -> Result<Value, Box<dyn std::error::Error>> {
         let url = format!("{BASE_URL}{path}");
         let resp = self
             .client
@@ -110,7 +103,10 @@ impl GoogleClient {
             let body = resp.text().await.unwrap_or_default();
             return Err(format!("Google API error {status}: {body}").into());
         }
-        Ok(resp.json().await.unwrap_or(serde_json::json!({"status": "ok"})))
+        Ok(resp
+            .json()
+            .await
+            .unwrap_or(serde_json::json!({"status": "ok"})))
     }
 
     pub async fn upload_image(

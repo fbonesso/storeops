@@ -88,9 +88,7 @@ async fn handle_sets(
             let limit_str = limit.unwrap_or(50).to_string();
             client
                 .get(
-                    &format!(
-                        "/appStoreVersionLocalizations/{localization_id}/appPreviewSets"
-                    ),
+                    &format!("/appStoreVersionLocalizations/{localization_id}/appPreviewSets"),
                     &[("limit", limit_str.as_str())],
                 )
                 .await
@@ -118,9 +116,7 @@ async fn handle_sets(
             client.post("/appPreviewSets", &body).await
         }
         PreviewSetsCommand::Delete { set_id } => {
-            client
-                .delete(&format!("/appPreviewSets/{set_id}"))
-                .await
+            client.delete(&format!("/appPreviewSets/{set_id}")).await
         }
     }
 }
@@ -132,10 +128,7 @@ async fn handle_videos(
     match cmd {
         PreviewVideosCommand::List { set_id } => {
             client
-                .get::<Value>(
-                    &format!("/appPreviewSets/{set_id}/appPreviews"),
-                    &[],
-                )
+                .get::<Value>(&format!("/appPreviewSets/{set_id}/appPreviews"), &[])
                 .await
         }
         PreviewVideosCommand::Upload {
@@ -175,8 +168,7 @@ async fn handle_videos(
                 for op in ops {
                     let url = op["url"].as_str().ok_or("missing upload url")?;
                     let offset = op["offset"].as_u64().unwrap_or(0) as usize;
-                    let length =
-                        op["length"].as_u64().unwrap_or(file_bytes.len() as u64) as usize;
+                    let length = op["length"].as_u64().unwrap_or(file_bytes.len() as u64) as usize;
                     let chunk =
                         &file_bytes[offset..std::cmp::min(offset + length, file_bytes.len())];
 
@@ -209,9 +201,7 @@ async fn handle_videos(
                 .await
         }
         PreviewVideosCommand::Delete { preview_id } => {
-            client
-                .delete(&format!("/appPreviews/{preview_id}"))
-                .await
+            client.delete(&format!("/appPreviews/{preview_id}")).await
         }
     }
 }

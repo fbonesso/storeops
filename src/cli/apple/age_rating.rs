@@ -57,10 +57,7 @@ pub async fn handle(
     match cmd {
         AgeRatingCommand::Get { app_id } => {
             let app_info: Value = client
-                .get::<Value>(
-                    &format!("/apps/{app_id}/appInfos"),
-                    &[("limit", "1")],
-                )
+                .get::<Value>(&format!("/apps/{app_id}/appInfos"), &[("limit", "1")])
                 .await?;
             let app_info_id = app_info["data"][0]["id"]
                 .as_str()
@@ -128,10 +125,7 @@ pub async fn handle(
                 }
             });
             client
-                .patch(
-                    &format!("/ageRatingDeclarations/{declaration_id}"),
-                    &body,
-                )
+                .patch(&format!("/ageRatingDeclarations/{declaration_id}"), &body)
                 .await
         }
     }

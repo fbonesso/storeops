@@ -31,7 +31,9 @@ pub async fn handle(
             client.get("/builds", &query).await
         }
         BuildsCommand::Info { build_id } => {
-            client.get::<Value>(&format!("/builds/{build_id}"), &[]).await
+            client
+                .get::<Value>(&format!("/builds/{build_id}"), &[])
+                .await
         }
     }
 }

@@ -365,9 +365,7 @@ async fn handle_localizations(
         }
         SubLocalizationsCommand::Delete { localization_id } => {
             client
-                .delete(&format!(
-                    "/subscriptionLocalizations/{localization_id}"
-                ))
+                .delete(&format!("/subscriptionLocalizations/{localization_id}"))
                 .await
         }
     }
@@ -448,9 +446,7 @@ async fn handle_offers(
                     }
                 }
             });
-            client
-                .post("/subscriptionPromotionalOffers", &body)
-                .await
+            client.post("/subscriptionPromotionalOffers", &body).await
         }
         OffersCommand::Delete { offer_id } => {
             client

@@ -4,7 +4,11 @@ pub mod google;
 use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
-#[command(name = "storeops", version, about = "Manage App Store Connect & Google Play Store")]
+#[command(
+    name = "storeops",
+    version,
+    about = "Manage App Store Connect & Google Play Store"
+)]
 pub struct Cli {
     #[command(subcommand)]
     pub command: Option<Command>,

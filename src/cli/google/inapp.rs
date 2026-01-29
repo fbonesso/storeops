@@ -214,10 +214,7 @@ async fn handle_subscriptions(
     match cmd {
         SubscriptionsCommand::List { package_name } => {
             client
-                .get(
-                    &format!("/{package_name}/subscriptions"),
-                    &[],
-                )
+                .get(&format!("/{package_name}/subscriptions"), &[])
                 .await
         }
         SubscriptionsCommand::Get {
@@ -225,10 +222,7 @@ async fn handle_subscriptions(
             product_id,
         } => {
             client
-                .get::<Value>(
-                    &format!("/{package_name}/subscriptions/{product_id}"),
-                    &[],
-                )
+                .get::<Value>(&format!("/{package_name}/subscriptions/{product_id}"), &[])
                 .await
         }
         SubscriptionsCommand::Create {

@@ -1,4 +1,4 @@
-use tabled::{Table, Tabled, settings::Style};
+use tabled::{settings::Style, Table, Tabled};
 
 #[allow(dead_code)]
 pub fn render<T: Tabled>(value: &T) -> String {
@@ -9,9 +9,7 @@ pub fn render<T: Tabled>(value: &T) -> String {
 
 #[allow(dead_code)]
 pub fn render_list<T: Tabled>(values: &[T]) -> String {
-    Table::new(values)
-        .with(Style::markdown())
-        .to_string()
+    Table::new(values).with(Style::markdown()).to_string()
 }
 
 #[cfg(test)]
@@ -41,8 +39,14 @@ mod tests {
     #[test]
     fn render_list_produces_markdown_table() {
         let rows = vec![
-            TestRow { name: "x".to_string(), score: 1 },
-            TestRow { name: "y".to_string(), score: 2 },
+            TestRow {
+                name: "x".to_string(),
+                score: 1,
+            },
+            TestRow {
+                name: "y".to_string(),
+                score: 2,
+            },
         ];
         let output = render_list(&rows);
         assert!(output.contains("|"));

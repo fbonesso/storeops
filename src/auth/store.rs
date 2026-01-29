@@ -1,5 +1,5 @@
-use crate::config::Config;
 use crate::config::profiles::Credentials;
+use crate::config::Config;
 
 pub fn resolve_apple_credentials(
     config: &Config,

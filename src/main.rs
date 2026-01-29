@@ -8,8 +8,8 @@ mod update;
 
 use clap::Parser;
 use cli::{AuthCommand, Cli, Command};
-use config::Config;
 use config::profiles::{Credentials, Profile, Store};
+use config::Config;
 use serde_json::{json, Value};
 use std::process;
 

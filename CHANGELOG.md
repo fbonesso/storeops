@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Interactive REPL console with ASCII banner when running with no arguments.
 - Command history persisted across sessions.
 - Self-update command (`storeops update`) with background version check.
-- `st` alias via symlink created by the install script.
 - Cross-platform binaries (Linux x64/ARM64, macOS x64/ARM64, Windows x64).
 - Curl-based install script (`install.sh`).
 - GitHub Actions CI and release workflows.

@@ -7,9 +7,13 @@ fn storeops() -> Command {
 
 #[test]
 fn help_exits_zero() {
-    storeops().arg("--help").assert().success().stdout(
-        predicate::str::contains("Manage App Store Connect & Google Play Store"),
-    );
+    storeops()
+        .arg("--help")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            "Manage App Store Connect & Google Play Store",
+        ));
 }
 
 #[test]

@@ -45,10 +45,7 @@ pub async fn handle(
                 )
                 .await
         }
-        PricingCommand::Points {
-            app_id,
-            territory,
-        } => {
+        PricingCommand::Points { app_id, territory } => {
             let limit_str = limit.unwrap_or(50).to_string();
             let mut query = vec![("limit", limit_str.as_str())];
             let territory_val;
@@ -57,10 +54,7 @@ pub async fn handle(
                 query.push(("filter[territory]", &territory_val));
             }
             client
-                .get(
-                    &format!("/apps/{app_id}/appPricePoints"),
-                    &query,
-                )
+                .get(&format!("/apps/{app_id}/appPricePoints"), &query)
                 .await
         }
         PricingCommand::Set {

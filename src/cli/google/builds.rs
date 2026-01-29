@@ -31,20 +31,14 @@ pub async fn handle(
                 .await?;
             let edit_id = edit["id"].as_str().ok_or("no edit id")?;
             let bundles: Value = client
-                .get(
-                    &format!("/{package_name}/edits/{edit_id}/bundles"),
-                    &[],
-                )
+                .get(&format!("/{package_name}/edits/{edit_id}/bundles"), &[])
                 .await?;
             let _ = client
                 .get::<Value>(&format!("/{package_name}/edits/{edit_id}:delete"), &[])
                 .await;
             Ok(bundles)
         }
-        BuildsCommand::Upload {
-            package_name,
-            file,
-        } => {
+        BuildsCommand::Upload { package_name, file } => {
             let edit: Value = client
                 .post(&format!("/{package_name}/edits"), &serde_json::json!({}))
                 .await?;

@@ -175,9 +175,7 @@ pub async fn handle(
                 .await
         }
         IapCommand::Delete { iap_id } => {
-            client
-                .delete(&format!("/inAppPurchasesV2/{iap_id}"))
-                .await
+            client.delete(&format!("/inAppPurchasesV2/{iap_id}")).await
         }
         IapCommand::Localizations { command } => {
             handle_iap_localizations(command, client, limit).await
@@ -271,9 +269,7 @@ async fn handle_iap_localizations(
         }
         IapLocalizationsCommand::Delete { localization_id } => {
             client
-                .delete(&format!(
-                    "/inAppPurchaseLocalizations/{localization_id}"
-                ))
+                .delete(&format!("/inAppPurchaseLocalizations/{localization_id}"))
                 .await
         }
     }
@@ -302,10 +298,7 @@ async fn handle_iap_prices(
                 query.push(("filter[territory]", &territory_val));
             }
             client
-                .get(
-                    &format!("/inAppPurchasesV2/{iap_id}/pricePoints"),
-                    &query,
-                )
+                .get(&format!("/inAppPurchasesV2/{iap_id}/pricePoints"), &query)
                 .await
         }
     }

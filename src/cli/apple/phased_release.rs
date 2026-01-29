@@ -38,9 +38,7 @@ pub async fn handle(
         PhasedReleaseCommand::Get { version_id } => {
             client
                 .get::<Value>(
-                    &format!(
-                        "/appStoreVersions/{version_id}/appStoreVersionPhasedRelease"
-                    ),
+                    &format!("/appStoreVersions/{version_id}/appStoreVersionPhasedRelease"),
                     &[],
                 )
                 .await
@@ -62,9 +60,7 @@ pub async fn handle(
                     }
                 }
             });
-            client
-                .post("/appStoreVersionPhasedReleases", &body)
-                .await
+            client.post("/appStoreVersionPhasedReleases", &body).await
         }
         PhasedReleaseCommand::Update { release_id, state } => {
             let body = json!({
@@ -85,9 +81,7 @@ pub async fn handle(
         }
         PhasedReleaseCommand::Delete { release_id } => {
             client
-                .delete(&format!(
-                    "/appStoreVersionPhasedReleases/{release_id}"
-                ))
+                .delete(&format!("/appStoreVersionPhasedReleases/{release_id}"))
                 .await
         }
     }

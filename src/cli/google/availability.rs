@@ -49,13 +49,13 @@ pub async fn handle(
             let edit_id = edit["id"].as_str().ok_or("no edit id")?;
             let result: Value = client
                 .get(
-                    &format!(
-                        "/{package_name}/edits/{edit_id}/tracks/{track}/countryAvailability"
-                    ),
+                    &format!("/{package_name}/edits/{edit_id}/tracks/{track}/countryAvailability"),
                     &[],
                 )
                 .await?;
-            let _ = client.delete_path(&format!("/{package_name}/edits/{edit_id}")).await;
+            let _ = client
+                .delete_path(&format!("/{package_name}/edits/{edit_id}"))
+                .await;
             Ok(result)
         }
         AvailabilityCommand::Countries { package_name } => {
@@ -69,7 +69,9 @@ pub async fn handle(
                     &[],
                 )
                 .await?;
-            let _ = client.delete_path(&format!("/{package_name}/edits/{edit_id}")).await;
+            let _ = client
+                .delete_path(&format!("/{package_name}/edits/{edit_id}"))
+                .await;
             Ok(result)
         }
         AvailabilityCommand::Update {
@@ -95,9 +97,7 @@ pub async fn handle(
 
             let result = client
                 .put(
-                    &format!(
-                        "/{package_name}/edits/{edit_id}/tracks/{track}/countryAvailability"
-                    ),
+                    &format!("/{package_name}/edits/{edit_id}/tracks/{track}/countryAvailability"),
                     &body,
                 )
                 .await?;

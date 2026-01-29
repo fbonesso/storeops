@@ -59,12 +59,11 @@ pub async fn handle(
                 .await?;
             let edit_id = edit["id"].as_str().ok_or("no edit id")?;
             let result: Value = client
-                .get(
-                    &format!("/{package_name}/edits/{edit_id}/listings"),
-                    &[],
-                )
+                .get(&format!("/{package_name}/edits/{edit_id}/listings"), &[])
                 .await?;
-            let _ = client.delete_path(&format!("/{package_name}/edits/{edit_id}")).await;
+            let _ = client
+                .delete_path(&format!("/{package_name}/edits/{edit_id}"))
+                .await;
             Ok(result)
         }
         ListingsCommand::Get {
@@ -81,7 +80,9 @@ pub async fn handle(
                     &[],
                 )
                 .await?;
-            let _ = client.delete_path(&format!("/{package_name}/edits/{edit_id}")).await;
+            let _ = client
+                .delete_path(&format!("/{package_name}/edits/{edit_id}"))
+                .await;
             Ok(result)
         }
         ListingsCommand::Update {

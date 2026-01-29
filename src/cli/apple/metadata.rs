@@ -167,9 +167,7 @@ pub async fn handle(
             handle_localizations(command, client, limit).await
         }
         MetadataCommand::AppInfo { command } => handle_app_info(command, client, limit).await,
-        MetadataCommand::Categories { command } => {
-            handle_categories(command, client, limit).await
-        }
+        MetadataCommand::Categories { command } => handle_categories(command, client, limit).await,
     }
 }
 
@@ -285,9 +283,7 @@ async fn handle_localizations(
         }
         LocalizationsCommand::Delete { localization_id } => {
             client
-                .delete(&format!(
-                    "/appStoreVersionLocalizations/{localization_id}"
-                ))
+                .delete(&format!("/appStoreVersionLocalizations/{localization_id}"))
                 .await
         }
     }
@@ -365,10 +361,7 @@ async fn handle_app_info(
                 }
             });
             client
-                .patch(
-                    &format!("/appInfoLocalizations/{localization_id}"),
-                    &body,
-                )
+                .patch(&format!("/appInfoLocalizations/{localization_id}"), &body)
                 .await
         }
         AppInfoCommand::Delete { localization_id } => {

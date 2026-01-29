@@ -26,8 +26,6 @@ pub async fn handle(
             query.push(("limit", limit_str.as_str()));
             client.get("/apps", &query).await
         }
-        AppsCommand::Info { app_id } => {
-            client.get::<Value>(&format!("/apps/{app_id}"), &[]).await
-        }
+        AppsCommand::Info { app_id } => client.get::<Value>(&format!("/apps/{app_id}"), &[]).await,
     }
 }
