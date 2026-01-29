@@ -3,6 +3,15 @@ use serde::de::DeserializeOwned;
 use serde_json::Value;
 
 const BASE_URL: &str = "https://api.appstoreconnect.apple.com/v1";
+const MAX_ERROR_LEN: usize = 512;
+
+fn truncate_error(body: &str) -> &str {
+    if body.len() <= MAX_ERROR_LEN {
+        body
+    } else {
+        &body[..MAX_ERROR_LEN]
+    }
+}
 
 pub struct AppleClient {
     client: reqwest::Client,
@@ -42,7 +51,7 @@ impl AppleClient {
         let status = resp.status();
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Apple API error {status}: {body}").into());
+            return Err(format!("Apple API error {status}: {}", truncate_error(&body)).into());
         }
         Ok(resp.json().await?)
     }
@@ -64,7 +73,7 @@ impl AppleClient {
         let status = resp.status();
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Apple API error {status}: {body}").into());
+            return Err(format!("Apple API error {status}: {}", truncate_error(&body)).into());
         }
         Ok(resp.json().await?)
     }
@@ -86,7 +95,7 @@ impl AppleClient {
         let status = resp.status();
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Apple API error {status}: {body}").into());
+            return Err(format!("Apple API error {status}: {}", truncate_error(&body)).into());
         }
         Ok(resp.json().await?)
     }
@@ -105,7 +114,7 @@ impl AppleClient {
         }
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Apple API error {status}: {body}").into());
+            return Err(format!("Apple API error {status}: {}", truncate_error(&body)).into());
         }
         Ok(resp
             .json()

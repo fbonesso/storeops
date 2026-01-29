@@ -23,9 +23,18 @@ struct TokenResponse {
     access_token: String,
 }
 
+const ALLOWED_TOKEN_URIS: &[&str] = &[
+    "https://oauth2.googleapis.com/token",
+    "https://accounts.google.com/o/oauth2/token",
+];
+
 pub async fn get_access_token(sa_path: &str) -> Result<String, Box<dyn std::error::Error>> {
     let content = std::fs::read_to_string(sa_path)?;
     let sa: ServiceAccount = serde_json::from_str(&content)?;
+
+    if !ALLOWED_TOKEN_URIS.contains(&sa.token_uri.as_str()) {
+        return Err(format!("untrusted token_uri in service account: {}", sa.token_uri).into());
+    }
 
     let now = SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs();
     let claims = Claims {

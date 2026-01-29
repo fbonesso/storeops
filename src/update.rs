@@ -80,7 +80,12 @@ async fn fetch_latest_release() -> Result<GitHubRelease, Box<dyn std::error::Err
     let status = resp.status();
     if !status.is_success() {
         let body = resp.text().await.unwrap_or_default();
-        return Err(format!("GitHub API error {status}: {body}").into());
+        let truncated = if body.len() > 512 {
+            &body[..512]
+        } else {
+            &body
+        };
+        return Err(format!("GitHub API error {status}: {truncated}").into());
     }
     Ok(resp.json().await?)
 }
@@ -173,7 +178,7 @@ pub async fn handle_update() -> Result<Value, Box<dyn std::error::Error>> {
         .bytes()
         .await?;
 
-    let tmpdir = std::env::temp_dir().join("storeops-update");
+    let tmpdir = std::env::temp_dir().join(format!("storeops-update-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&tmpdir);
     std::fs::create_dir_all(&tmpdir)?;
 
@@ -239,7 +244,19 @@ fn extract_tar_gz(
     let file = std::fs::File::open(archive)?;
     let decoder = flate2::read::GzDecoder::new(file);
     let mut archive = tar::Archive::new(decoder);
-    archive.unpack(dest)?;
+    let canon_dest = dest.canonicalize()?;
+    for entry in archive.entries()? {
+        let mut entry = entry?;
+        let path = entry.path()?;
+        let full = canon_dest.join(&path);
+        let resolved = full
+            .canonicalize()
+            .unwrap_or_else(|_| canon_dest.join(path.file_name().unwrap_or_default()));
+        if !resolved.starts_with(&canon_dest) {
+            return Err(format!("tar entry escapes target directory: {}", path.display()).into());
+        }
+        entry.unpack_in(dest)?;
+    }
     Ok(())
 }
 

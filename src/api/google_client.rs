@@ -3,6 +3,15 @@ use serde::de::DeserializeOwned;
 use serde_json::Value;
 
 const BASE_URL: &str = "https://androidpublisher.googleapis.com/androidpublisher/v3/applications";
+const MAX_ERROR_LEN: usize = 512;
+
+fn truncate_error(body: &str) -> &str {
+    if body.len() <= MAX_ERROR_LEN {
+        body
+    } else {
+        &body[..MAX_ERROR_LEN]
+    }
+}
 
 pub struct GoogleClient {
     client: reqwest::Client,
@@ -42,7 +51,7 @@ impl GoogleClient {
         let status = resp.status();
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Google API error {status}: {body}").into());
+            return Err(format!("Google API error {status}: {}", truncate_error(&body)).into());
         }
         Ok(resp.json().await?)
     }
@@ -64,7 +73,7 @@ impl GoogleClient {
         let status = resp.status();
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Google API error {status}: {body}").into());
+            return Err(format!("Google API error {status}: {}", truncate_error(&body)).into());
         }
         Ok(resp.json().await?)
     }
@@ -82,7 +91,7 @@ impl GoogleClient {
         let status = resp.status();
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Google API error {status}: {body}").into());
+            return Err(format!("Google API error {status}: {}", truncate_error(&body)).into());
         }
         Ok(resp.json().await?)
     }
@@ -101,7 +110,7 @@ impl GoogleClient {
         }
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Google API error {status}: {body}").into());
+            return Err(format!("Google API error {status}: {}", truncate_error(&body)).into());
         }
         Ok(resp
             .json()
@@ -137,7 +146,11 @@ impl GoogleClient {
         let status = resp.status();
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Google API upload error {status}: {body}").into());
+            return Err(format!(
+                "Google API upload error {status}: {}",
+                truncate_error(&body)
+            )
+            .into());
         }
         Ok(resp.json().await?)
     }
@@ -163,7 +176,11 @@ impl GoogleClient {
         let status = resp.status();
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!("Google API upload error {status}: {body}").into());
+            return Err(format!(
+                "Google API upload error {status}: {}",
+                truncate_error(&body)
+            )
+            .into());
         }
         Ok(resp.json().await?)
     }
