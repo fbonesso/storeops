@@ -4,7 +4,6 @@ pub mod builds;
 pub mod images;
 pub mod inapp;
 pub mod listings;
-pub mod reports;
 pub mod reviews;
 pub mod submit;
 pub mod testers;
@@ -46,11 +45,6 @@ pub enum GoogleCommand {
     Reviews {
         #[command(subcommand)]
         command: reviews::ReviewsCommand,
-    },
-    /// Statistics and reports
-    Reports {
-        #[command(subcommand)]
-        command: reports::ReportsCommand,
     },
     /// Manage store listings (title, description, etc. per locale)
     Listings {

@@ -13,10 +13,13 @@ pub enum AvailabilityCommand {
         #[arg(long)]
         track: String,
     },
-    /// List all available country codes
+    /// List all available country codes for a track
     Countries {
         /// Package name
         package_name: String,
+        /// Track name (e.g., production, beta)
+        #[arg(long)]
+        track: String,
     },
     /// Update country targeting for a release
     Update {
@@ -49,7 +52,7 @@ pub async fn handle(
             let edit_id = edit["id"].as_str().ok_or("no edit id")?;
             let result: Value = client
                 .get(
-                    &format!("/{package_name}/edits/{edit_id}/tracks/{track}/countryAvailability"),
+                    &format!("/{package_name}/edits/{edit_id}/countryAvailability/{track}"),
                     &[],
                 )
                 .await?;
@@ -58,14 +61,17 @@ pub async fn handle(
                 .await;
             Ok(result)
         }
-        AvailabilityCommand::Countries { package_name } => {
+        AvailabilityCommand::Countries {
+            package_name,
+            track,
+        } => {
             let edit: Value = client
                 .post(&format!("/{package_name}/edits"), &json!({}))
                 .await?;
             let edit_id = edit["id"].as_str().ok_or("no edit id")?;
             let result: Value = client
                 .get(
-                    &format!("/{package_name}/edits/{edit_id}/countryAvailability"),
+                    &format!("/{package_name}/edits/{edit_id}/countryAvailability/{track}"),
                     &[],
                 )
                 .await?;
@@ -97,7 +103,7 @@ pub async fn handle(
 
             let result = client
                 .put(
-                    &format!("/{package_name}/edits/{edit_id}/tracks/{track}/countryAvailability"),
+                    &format!("/{package_name}/edits/{edit_id}/countryAvailability/{track}"),
                     &body,
                 )
                 .await?;

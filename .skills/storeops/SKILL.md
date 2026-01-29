@@ -80,9 +80,12 @@ Actions are consistent across resources:
 Always capture JSON output for chaining:
 
 ```bash
-# Get an app ID, then use it downstream
+# Apple: get an app ID, then use it downstream
 APP_ID=$(storeops apple apps list | jq -r '.data[0].id')
 storeops apple versions list --app-id "$APP_ID"
+
+# Google: use known package name (no list-apps endpoint)
+storeops google apps info com.example.app
 ```
 
 ## Core Workflows

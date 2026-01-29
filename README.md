@@ -19,7 +19,7 @@
 - **Reviews and ratings** -- fetch and respond to user reviews across both stores
 - **TestFlight and testing tracks** -- manage beta groups, testers, and testing track assignments
 - **Builds and submissions** -- list builds, submit for review, and monitor review status
-- **Analytics and reports** -- pull sales, download, and crash analytics data
+- **Analytics and reports** -- pull sales and download analytics (Apple); Google reports via GCS buckets
 - **Phased releases and age ratings** -- control rollout stages and age rating declarations
 - **Agent-friendly by design** -- JSON output by default, no interactive prompts, explicit flags, clean exit codes
 
@@ -142,8 +142,8 @@ storeops apple analytics get --app-id 123456789 --metric downloads --start 2025-
 ### Google workflows
 
 ```sh
-# List apps
-storeops google apps list
+# Get app details
+storeops google apps info com.example.app
 
 # Update a store listing
 storeops google listings update --package com.example.app --locale en-US --title "My App"
@@ -157,8 +157,6 @@ storeops google submit --package com.example.app --track production --build-numb
 # Read reviews
 storeops google reviews list --package com.example.app
 
-# Fetch sales reports
-storeops google reports sales --package com.example.app --month 2025-01
 ```
 
 ### Output formats
@@ -231,16 +229,15 @@ storeops
 |   +-- availability   Configure territory availability
 |
 +-- google
-|   +-- apps           List and get app details
+|   +-- apps           Get app details
 |   +-- tracks         List and manage release tracks
 |   +-- builds         Upload and list builds
 |   +-- testers        Manage internal and external testers
 |   +-- submit         Promote builds to a track
 |   +-- reviews        List and reply to reviews
-|   +-- reports        Fetch sales, installs, and crash reports
 |   +-- listings       Get and update store listings
 |   +-- images         Upload and manage store images
-|   +-- inapp          Manage in-app products
+|   +-- inapp          Manage in-app products and subscriptions
 |   +-- availability   Configure country availability
 |
 +-- Global flags

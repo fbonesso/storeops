@@ -266,8 +266,8 @@ Fetch sales and trends data. Supports `--frequency daily|weekly|monthly`, `--sta
 
 ## google apps
 
-### `storeops google apps list`
-### `storeops google apps info --app-id <package-name>`
+### `storeops google apps info <package-name>`
+Get app details for a known package name. Note: Google Play API does not provide a list-apps endpoint.
 
 ---
 
@@ -307,13 +307,6 @@ Commit the current edit (finalizes all pending changes).
 
 ### `storeops google reviews list --app-id <id>`
 ### `storeops google reviews reply --review-id <id> --reply <text>`
-
----
-
-## google reports
-
-### `storeops google reports stats --app-id <id>`
-Flags: `--metric installs\|crashes\|ratings\|revenue`, `--start-date`, `--end-date`.
 
 ---
 
@@ -366,6 +359,6 @@ Flags: `--metric installs\|crashes\|ratings\|revenue`, `--start-date`, `--end-da
 
 | Command | Key Flags |
 |---------|-----------|
-| `storeops google availability get --app-id <id>` | |
-| `storeops google availability countries --app-id <id>` | |
-| `storeops google availability update --app-id <id> --countries <csv>` | |
+| `storeops google availability get <package-name> --track <track>` | |
+| `storeops google availability countries <package-name> --track <track>` | |
+| `storeops google availability update <package-name> --track <track> --countries <csv>` | `--rest-of-world` |

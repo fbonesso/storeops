@@ -46,7 +46,7 @@ pub async fn handle(
                 )
                 .await?;
             let _ = client
-                .get::<Value>(&format!("/{package_name}/edits/{edit_id}:delete"), &[])
+                .delete_path(&format!("/{package_name}/edits/{edit_id}"))
                 .await;
             Ok(testers)
         }

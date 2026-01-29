@@ -214,7 +214,7 @@ async fn handle_subscriptions(
     match cmd {
         SubscriptionsCommand::List { package_name } => {
             client
-                .get(&format!("/{package_name}/subscriptions"), &[])
+                .get(&format!("/{package_name}/monetization/subscriptions"), &[])
                 .await
         }
         SubscriptionsCommand::Get {
@@ -222,7 +222,10 @@ async fn handle_subscriptions(
             product_id,
         } => {
             client
-                .get::<Value>(&format!("/{package_name}/subscriptions/{product_id}"), &[])
+                .get::<Value>(
+                    &format!("/{package_name}/monetization/subscriptions/{product_id}"),
+                    &[],
+                )
                 .await
         }
         SubscriptionsCommand::Create {
@@ -233,7 +236,7 @@ async fn handle_subscriptions(
             let body_json: Value = serde_json::from_str(body)?;
             client
                 .post(
-                    &format!("/{package_name}/subscriptions?productId={product_id}"),
+                    &format!("/{package_name}/monetization/subscriptions?productId={product_id}"),
                     &body_json,
                 )
                 .await
@@ -244,7 +247,7 @@ async fn handle_subscriptions(
         } => {
             client
                 .post(
-                    &format!("/{package_name}/subscriptions/{product_id}:archive"),
+                    &format!("/{package_name}/monetization/subscriptions/{product_id}:archive"),
                     &json!({}),
                 )
                 .await

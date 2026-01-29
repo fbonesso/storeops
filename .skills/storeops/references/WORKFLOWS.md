@@ -334,7 +334,7 @@ storeops apple submit "$APP_APPLE" --version "3.0.0"
 
 # Google side
 storeops google builds upload --app-id "$APP_GOOGLE" --file app-release.aab
-VCODE=$(storeops google builds list --app-id "$APP_GOOGLE" --limit 1 | jq -r '.data[0].versionCode')
+VCODE=$(storeops google builds list "$APP_GOOGLE" --limit 1 | jq -r '.data[0].versionCode')
 storeops google tracks update --app-id "$APP_GOOGLE" --track production \
   --version-code "$VCODE" --rollout-fraction 0.1
 storeops google listings update --app-id "$APP_GOOGLE" --locale en-US \

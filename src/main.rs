@@ -272,9 +272,6 @@ async fn handle_google(
         cli::google::GoogleCommand::Reviews { command } => {
             cli::google::reviews::handle(command, &client).await
         }
-        cli::google::GoogleCommand::Reports { command } => {
-            cli::google::reports::handle(command, &client).await
-        }
         cli::google::GoogleCommand::Listings { command } => {
             cli::google::listings::handle(command, &client).await
         }

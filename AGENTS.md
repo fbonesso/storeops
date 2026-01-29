@@ -80,8 +80,12 @@ Actions are consistent across resources: `list`, `info`/`get`, `create`, `update
 Always parse JSON output to extract IDs for downstream commands:
 
 ```bash
+# Apple: list apps to get IDs
 APP_ID=$(storeops apple apps list | jq -r '.data[0].id')
 storeops apple versions list --app-id "$APP_ID"
+
+# Google: use known package name directly (no list-apps endpoint)
+storeops google apps info com.example.app
 ```
 
 ## Core Workflows

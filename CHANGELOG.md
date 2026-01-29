@@ -5,25 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.1] - 2026-01-29
-
-### Security
-
-- SHA256 checksum verification for self-update downloads.
-- SHA256 checksum verification in install script.
-- Release workflow generates `checksums.sha256` for all artifacts.
-- Config and history files written with 0600 permissions (Unix).
-- Tar extraction validates paths to prevent directory traversal.
-- Google OAuth token_uri allowlist validation.
-- API error responses truncated to prevent information leakage.
-- Credential file paths canonicalized before use.
-
 ## [0.1.0] - 2026-01-29
 
 ### Added
 
 - Full Apple App Store Connect API coverage: apps, versions, builds, TestFlight, metadata, screenshots, previews, pricing, age ratings, phased releases, in-app purchases, subscriptions, availability, reviews, devices, analytics, and submit.
-- Full Google Play Developer API coverage: apps, tracks, builds, testers, listings, images, in-app products, availability, reviews, reports, and submit.
+- Google Play Developer API coverage: apps, tracks, builds, testers, listings, images, in-app products, subscriptions (monetization v2), availability, reviews, and submit.
 - Profile-based authentication with environment variable fallback.
 - JSON, table, and markdown output formats with `--pretty` flag.
 - Pagination support with `--limit`, `--next`, and `--paginate` flags.
@@ -35,3 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI and release workflows.
 - Agent Skills integration (`.skills/storeops/`).
 - AGENTS.md for AI agent usage documentation.
+
+### Security
+
+- SHA256 checksum verification for self-update downloads.
+- SHA256 checksum verification in install script.
+- Release workflow generates `checksums.sha256` for all artifacts.
+- Config and history files written with 0600 permissions (Unix).
+- Tar extraction validates paths to prevent directory traversal.
+- Google OAuth token_uri allowlist validation.
+- API error responses truncated to prevent information leakage.
+- Credential file paths canonicalized before use.
