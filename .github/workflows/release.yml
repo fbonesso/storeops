@@ -114,21 +114,15 @@ jobs:
         run: ls -R artifacts/
 
       - name: Extract changelog for this version
-        id: changelog
         run: |
           tag="${GITHUB_REF_NAME}"
           version="${tag#v}"
-          # Extract the section for this version from CHANGELOG.md
-          body=$(awk "/^## \[${version}\]/{found=1; next} /^## \[/{if(found) exit} found{print}" CHANGELOG.md)
-          {
-            echo "BODY<<CHANGELOG_EOF"
-            echo "$body"
-            echo "CHANGELOG_EOF"
-          } >> "$GITHUB_ENV"
+          awk "/^## \[${version}\]/{found=1; next} /^## \[/{if(found) exit} found{print}" CHANGELOG.md > release_notes.md
+          cat release_notes.md
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          body: ${{ env.BODY }}
+          body_path: release_notes.md
           make_latest: true
           files: artifacts/*
