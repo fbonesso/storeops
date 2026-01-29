@@ -3,7 +3,7 @@ set -e
 
 REPO="fbonesso/storeops"
 BINARY="storeops"
-INSTALL_DIR="/usr/local/bin"
+INSTALL_DIR="${HOME}/.local/bin"
 
 get_arch() {
   arch=$(uname -m)
@@ -82,14 +82,15 @@ main() {
 
   install_dir="${STOREOPS_INSTALL_DIR:-$INSTALL_DIR}"
 
-  if [ -w "$install_dir" ]; then
-    cp "$bin" "${install_dir}/storeops"
-    chmod +x "${install_dir}/storeops"
-  else
-    echo "Need elevated permissions to install to ${install_dir}"
-    sudo cp "$bin" "${install_dir}/storeops"
-    sudo chmod +x "${install_dir}/storeops"
-  fi
+  mkdir -p "$install_dir"
+  cp "$bin" "${install_dir}/storeops"
+  chmod +x "${install_dir}/storeops"
+
+  # Check if install dir is in PATH
+  case ":$PATH:" in
+    *":${install_dir}:"*) ;;
+    *) echo "Add ${install_dir} to your PATH: export PATH=\"${install_dir}:\$PATH\"" ;;
+  esac
 
   echo "Installed storeops ${version} to ${install_dir}"
   echo ""
