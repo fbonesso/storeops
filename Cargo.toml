@@ -1,6 +1,6 @@
 [package]
 name = "storeops"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "CLI for managing App Store Connect and Google Play Store lifecycle"
 license = "MIT"

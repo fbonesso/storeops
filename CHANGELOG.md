@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-01-29
+
+### Security
+
+- SHA256 checksum verification for self-update downloads.
+- SHA256 checksum verification in install script.
+- Release workflow generates `checksums.sha256` for all artifacts.
+- Config and history files written with 0600 permissions (Unix).
+- Tar extraction validates paths to prevent directory traversal.
+- Google OAuth token_uri allowlist validation.
+- API error responses truncated to prevent information leakage.
+- Credential file paths canonicalized before use.
+
 ## [0.1.0] - 2026-01-29
 
 ### Added
