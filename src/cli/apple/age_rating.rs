@@ -4,6 +4,7 @@ use serde_json::{json, Value};
 use crate::api::apple_client::AppleClient;
 
 #[derive(Subcommand)]
+#[allow(clippy::large_enum_variant)]
 pub enum AgeRatingCommand {
     /// Get the age rating declaration for an app
     Get {

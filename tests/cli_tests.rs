@@ -1,8 +1,8 @@
-use assert_cmd::Command;
+use assert_cmd::cargo::cargo_bin_cmd;
 use predicates::prelude::*;
 
-fn storeops() -> Command {
-    Command::cargo_bin("storeops").unwrap()
+fn storeops() -> assert_cmd::Command {
+    cargo_bin_cmd!("storeops")
 }
 
 #[test]

@@ -61,8 +61,10 @@ mod tests {
 
     #[test]
     fn serialization_round_trip() {
-        let mut config = Config::default();
-        config.active_profile = Some("test".to_string());
+        let mut config = Config {
+            active_profile: Some("test".to_string()),
+            ..Default::default()
+        };
         config.profiles.insert(
             "test".to_string(),
             Profile {
@@ -108,8 +110,10 @@ mod tests {
 
     #[test]
     fn active_profile_returns_none_for_missing_name() {
-        let mut config = Config::default();
-        config.active_profile = Some("nonexistent".to_string());
+        let config = Config {
+            active_profile: Some("nonexistent".to_string()),
+            ..Default::default()
+        };
         assert!(config.active_profile().is_none());
     }
 }
