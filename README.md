@@ -2,7 +2,6 @@
 
 **Manage the full App Store Connect and Google Play Store lifecycle from the command line.**
 
-[![Crates.io](https://img.shields.io/crates/v/storeops)](https://crates.io/crates/storeops)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI](https://github.com/fbonesso/storeops/actions/workflows/ci.yml/badge.svg)](https://github.com/fbonesso/storeops/actions/workflows/ci.yml)
 [![GitHub Release](https://img.shields.io/github/v/release/fbonesso/storeops)](https://github.com/fbonesso/storeops/releases)
