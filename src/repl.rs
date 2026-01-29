@@ -138,6 +138,11 @@ pub async fn run_repl() {
     if let Some(ref path) = history_path {
         let _ = std::fs::create_dir_all(path.parent().unwrap());
         let _ = rl.save_history(path);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let _ = std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o600));
+        }
     }
 
     println!("\n  {} 👋\n", "Goodbye!".dimmed());

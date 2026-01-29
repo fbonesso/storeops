@@ -1,5 +1,20 @@
 use crate::config::profiles::Credentials;
 use crate::config::Config;
+use std::path::Path;
+
+fn validate_file_path(path: &str) -> Result<String, String> {
+    let p = Path::new(path);
+    if !p.exists() {
+        return Err(format!("file not found: {path}"));
+    }
+    let canonical = p
+        .canonicalize()
+        .map_err(|e| format!("cannot resolve path {path}: {e}"))?;
+    if !canonical.is_file() {
+        return Err(format!("not a regular file: {path}"));
+    }
+    Ok(canonical.to_string_lossy().into_owned())
+}
 
 pub fn resolve_apple_credentials(
     config: &Config,
@@ -10,7 +25,8 @@ pub fn resolve_apple_credentials(
         std::env::var("STOREOPS_APPLE_ISSUER_ID"),
         std::env::var("STOREOPS_APPLE_KEY_PATH"),
     ) {
-        let key = std::fs::read(&key_path).map_err(|e| format!("cannot read key: {e}"))?;
+        let resolved = validate_file_path(&key_path)?;
+        let key = std::fs::read(&resolved).map_err(|e| format!("cannot read key: {e}"))?;
         return Ok((key_id, issuer_id, key));
     }
 
@@ -28,7 +44,8 @@ pub fn resolve_apple_credentials(
             issuer_id,
             key_path,
         } => {
-            let key = std::fs::read(key_path).map_err(|e| format!("cannot read key: {e}"))?;
+            let resolved = validate_file_path(key_path)?;
+            let key = std::fs::read(&resolved).map_err(|e| format!("cannot read key: {e}"))?;
             Ok((key_id.clone(), issuer_id.clone(), key))
         }
         _ => Err("active profile is not an Apple profile".to_string()),
@@ -40,7 +57,7 @@ pub fn resolve_google_credentials(
     profile_name: Option<&str>,
 ) -> Result<String, String> {
     if let Ok(path) = std::env::var("STOREOPS_GOOGLE_SERVICE_ACCOUNT") {
-        return Ok(path);
+        return validate_file_path(&path);
     }
 
     let profile = match profile_name {
@@ -54,7 +71,7 @@ pub fn resolve_google_credentials(
     match &profile.credentials {
         Credentials::Google {
             service_account_path,
-        } => Ok(service_account_path.clone()),
+        } => validate_file_path(service_account_path),
         _ => Err("active profile is not a Google profile".to_string()),
     }
 }
