@@ -73,14 +73,21 @@ main() {
   echo "Extracting..."
   tar -xzf "${tmpdir}/${archive}" -C "$tmpdir"
 
+  # Find the binary (may be in a subdirectory)
+  bin=$(find "$tmpdir" -name storeops -type f | head -1)
+  if [ -z "$bin" ]; then
+    echo "storeops binary not found in archive" >&2
+    exit 1
+  fi
+
   install_dir="${STOREOPS_INSTALL_DIR:-$INSTALL_DIR}"
 
   if [ -w "$install_dir" ]; then
-    cp "${tmpdir}/storeops" "${install_dir}/storeops"
+    cp "$bin" "${install_dir}/storeops"
     chmod +x "${install_dir}/storeops"
   else
     echo "Need elevated permissions to install to ${install_dir}"
-    sudo cp "${tmpdir}/storeops" "${install_dir}/storeops"
+    sudo cp "$bin" "${install_dir}/storeops"
     sudo chmod +x "${install_dir}/storeops"
   fi
 
