@@ -228,10 +228,8 @@ pub async fn handle_update() -> Result<Value, Box<dyn std::error::Error>> {
         "storeops"
     };
 
-    let src = tmpdir.join(main_bin);
-    if !src.exists() {
-        return Err(format!("{main_bin} not found in archive").into());
-    }
+    let src = find_binary_in_dir(&tmpdir, main_bin)
+        .ok_or_else(|| format!("{main_bin} not found in archive"))?;
     let dest = install_dir.join(main_bin);
     let backup = install_dir.join(format!("{main_bin}.bak"));
 
@@ -263,6 +261,24 @@ pub async fn handle_update() -> Result<Value, Box<dyn std::error::Error>> {
         "previous_version": CURRENT_VERSION,
         "new_version": remote,
     }))
+}
+
+fn find_binary_in_dir(dir: &std::path::Path, name: &str) -> Option<PathBuf> {
+    // Check top-level first
+    let direct = dir.join(name);
+    if direct.exists() {
+        return Some(direct);
+    }
+    // Search subdirectories (tarball may contain a nested folder)
+    if let Ok(entries) = std::fs::read_dir(dir) {
+        for entry in entries.flatten() {
+            let candidate = entry.path().join(name);
+            if candidate.exists() {
+                return Some(candidate);
+            }
+        }
+    }
+    None
 }
 
 fn extract_tar_gz(
