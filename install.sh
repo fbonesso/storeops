@@ -44,6 +44,41 @@ download() {
   fi
 }
 
+verify_checksum() {
+  archive_path="$1"
+  archive_name="$2"
+  checksums_path="$3"
+
+  if ! [ -f "$checksums_path" ]; then
+    echo "Warning: checksums file not found, skipping verification" >&2
+    return 0
+  fi
+
+  expected=$(grep "$archive_name" "$checksums_path" | awk '{print $1}')
+  if [ -z "$expected" ]; then
+    echo "Warning: no checksum found for ${archive_name}, skipping verification" >&2
+    return 0
+  fi
+
+  if command -v sha256sum >/dev/null 2>&1; then
+    actual=$(sha256sum "$archive_path" | awk '{print $1}')
+  elif command -v shasum >/dev/null 2>&1; then
+    actual=$(shasum -a 256 "$archive_path" | awk '{print $1}')
+  else
+    echo "Warning: no sha256 tool found, skipping verification" >&2
+    return 0
+  fi
+
+  if [ "$actual" != "$expected" ]; then
+    echo "Checksum verification FAILED" >&2
+    echo "  Expected: ${expected}" >&2
+    echo "  Actual:   ${actual}" >&2
+    exit 1
+  fi
+
+  echo "Checksum verified."
+}
+
 main() {
   arch=$(get_arch)
   os=$(get_os)
@@ -63,12 +98,19 @@ main() {
 
   archive="storeops-${version}-${target}.tar.gz"
   url="https://github.com/${REPO}/releases/download/${version}/${archive}"
+  checksums_url="https://github.com/${REPO}/releases/download/${version}/checksums.sha256"
 
   tmpdir=$(mktemp -d)
   trap 'rm -rf "$tmpdir"' EXIT
 
   echo "Downloading ${url}..."
   download "$url" "${tmpdir}/${archive}"
+
+  echo "Downloading checksums..."
+  download "$checksums_url" "${tmpdir}/checksums.sha256" 2>/dev/null || true
+
+  echo "Verifying..."
+  verify_checksum "${tmpdir}/${archive}" "$archive" "${tmpdir}/checksums.sha256"
 
   echo "Extracting..."
   tar -xzf "${tmpdir}/${archive}" -C "$tmpdir"

@@ -1,5 +1,6 @@
 use serde::Deserialize;
 use serde_json::{json, Value};
+use sha2::{Digest, Sha256};
 use std::env;
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -177,6 +178,33 @@ pub async fn handle_update() -> Result<Value, Box<dyn std::error::Error>> {
         .await?
         .bytes()
         .await?;
+
+    eprintln!("Verifying checksum...");
+    let checksums_url = format!(
+        "https://github.com/{REPO}/releases/download/{}/checksums.sha256",
+        release.tag_name
+    );
+    let checksums_resp = client
+        .get(&checksums_url)
+        .header("User-Agent", format!("storeops/{CURRENT_VERSION}"))
+        .send()
+        .await?;
+    if !checksums_resp.status().is_success() {
+        return Err("failed to download checksums file for verification".into());
+    }
+    let checksums_text = checksums_resp.text().await?;
+    let expected_hash = checksums_text
+        .lines()
+        .find(|line| line.ends_with(&asset.name))
+        .and_then(|line| line.split_whitespace().next())
+        .ok_or("checksum not found for this asset")?;
+
+    let actual_hash = hex::encode(Sha256::digest(&bytes));
+    if actual_hash != expected_hash {
+        return Err(
+            format!("checksum mismatch: expected {expected_hash}, got {actual_hash}").into(),
+        );
+    }
 
     let tmpdir = std::env::temp_dir().join(format!("storeops-update-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&tmpdir);
