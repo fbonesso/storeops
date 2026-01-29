@@ -104,14 +104,14 @@ pub async fn run_repl() {
 
                 match crate::cli::Cli::try_parse_from(&full_args) {
                     Ok(cli) => {
+                        let json_output = cli.json;
                         let pretty = cli.pretty;
                         match crate::run(cli).await {
                             Ok(value) => {
-                                if pretty {
-                                    println!("{}", serde_json::to_string_pretty(&value).unwrap());
-                                } else {
-                                    println!("{}", serde_json::to_string(&value).unwrap());
-                                }
+                                println!(
+                                    "{}",
+                                    crate::output::render_value(&value, json_output, pretty)
+                                );
                             }
                             Err(e) => {
                                 eprintln!(

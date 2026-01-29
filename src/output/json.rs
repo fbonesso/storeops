@@ -1,7 +1,6 @@
-use serde::Serialize;
+use serde_json::Value;
 
-#[allow(dead_code)]
-pub fn render<T: Serialize + ?Sized>(value: &T, pretty: bool) -> String {
+pub fn render(value: &Value, pretty: bool) -> String {
     if pretty {
         serde_json::to_string_pretty(value).unwrap_or_else(|e| format!("{{\"error\":\"{e}\"}}"))
     } else {
@@ -19,7 +18,7 @@ mod tests {
         let val = json!({"name": "test", "count": 42});
         let output = render(&val, true);
         assert!(output.contains('\n'));
-        assert!(output.contains("  ")); // indented
+        assert!(output.contains("  "));
         assert!(output.contains("\"name\": \"test\""));
     }
 

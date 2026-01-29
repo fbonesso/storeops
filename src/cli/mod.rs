@@ -13,11 +13,11 @@ pub struct Cli {
     #[command(subcommand)]
     pub command: Option<Command>,
 
-    /// Output format
-    #[arg(long, global = true, default_value = "json")]
-    pub output: OutputFormat,
+    /// Output as JSON instead of table
+    #[arg(long, global = true)]
+    pub json: bool,
 
-    /// Pretty-print JSON output
+    /// Pretty-print JSON output (only with --json)
     #[arg(long, global = true)]
     pub pretty: bool,
 
@@ -44,13 +44,6 @@ pub struct Cli {
     /// Enable verbose/debug logging
     #[arg(long, global = true)]
     pub verbose: bool,
-}
-
-#[derive(Clone, ValueEnum)]
-pub enum OutputFormat {
-    Json,
-    Table,
-    Markdown,
 }
 
 #[derive(Subcommand)]

@@ -23,6 +23,7 @@ async fn main() {
         process::exit(0);
     }
 
+    let json_output = cli.json;
     let pretty = cli.pretty;
 
     let is_update = matches!(cli.command, Some(Command::Update));
@@ -34,11 +35,7 @@ async fn main() {
 
     match result {
         Ok(value) => {
-            if pretty {
-                println!("{}", serde_json::to_string_pretty(&value).unwrap());
-            } else {
-                println!("{}", serde_json::to_string(&value).unwrap());
-            }
+            println!("{}", output::render_value(&value, json_output, pretty));
             process::exit(0);
         }
         Err(e) => {

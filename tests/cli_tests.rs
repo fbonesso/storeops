@@ -67,7 +67,7 @@ fn help_shows_global_flags() {
         .arg("--help")
         .assert()
         .success()
-        .stdout(predicate::str::contains("--output"))
+        .stdout(predicate::str::contains("--json"))
         .stdout(predicate::str::contains("--pretty"))
         .stdout(predicate::str::contains("--profile"))
         .stdout(predicate::str::contains("--verbose"));
