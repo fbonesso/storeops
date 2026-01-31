@@ -5,11 +5,18 @@ use crate::api::apple_client::AppleClient;
 
 #[derive(Subcommand)]
 pub enum AppsCommand {
-    /// List all apps
+    /// List all apps available in App Store Connect
+    ///
+    /// Examples:
+    ///   storeops apple apps list
+    ///   storeops apple apps list --limit 10
     List,
-    /// Get app details
+    /// Get detailed information for a specific app
+    ///
+    /// Examples:
+    ///   storeops apple apps info --app-id 1234567890
     Info {
-        /// App ID
+        /// Your App Store Connect app ID (not the bundle ID)
         app_id: String,
     },
 }

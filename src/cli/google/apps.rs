@@ -5,9 +5,12 @@ use crate::api::google_client::GoogleClient;
 
 #[derive(Subcommand)]
 pub enum AppsCommand {
-    /// Get app details
+    /// Get app details from Google Play Console
+    ///
+    /// Examples:
+    ///   storeops google apps info com.example.app
     Info {
-        /// Package name (e.g., com.example.app)
+        /// Your app's package name (e.g., com.example.app)
         package_name: String,
     },
 }
