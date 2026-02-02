@@ -26,13 +26,13 @@ impl AppleClient {
         }
     }
 
-    fn headers(&self) -> HeaderMap {
+    fn headers(&self) -> Result<HeaderMap, Box<dyn std::error::Error>> {
         let mut h = HeaderMap::new();
         h.insert(
             AUTHORIZATION,
-            format!("Bearer {}", self.token).parse().unwrap(),
+            format!("Bearer {}", self.token).parse()?,
         );
-        h
+        Ok(h)
     }
 
     pub async fn get<T: DeserializeOwned>(
@@ -44,7 +44,7 @@ impl AppleClient {
         let resp = self
             .client
             .get(&url)
-            .headers(self.headers())
+            .headers(self.headers()?)
             .query(query)
             .send()
             .await?;
@@ -65,7 +65,7 @@ impl AppleClient {
         let resp = self
             .client
             .post(&url)
-            .headers(self.headers())
+            .headers(self.headers()?)
             .header("Content-Type", "application/json")
             .json(body)
             .send()
@@ -87,7 +87,7 @@ impl AppleClient {
         let resp = self
             .client
             .patch(&url)
-            .headers(self.headers())
+            .headers(self.headers()?)
             .header("Content-Type", "application/json")
             .json(body)
             .send()
@@ -105,7 +105,7 @@ impl AppleClient {
         let resp = self
             .client
             .delete(&url)
-            .headers(self.headers())
+            .headers(self.headers()?)
             .send()
             .await?;
         let status = resp.status();

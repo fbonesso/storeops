@@ -48,7 +48,9 @@ fn should_check() -> bool {
 
 fn record_check() {
     if let Some(path) = version_file_path() {
-        let _ = std::fs::create_dir_all(path.parent().unwrap());
+        if let Some(parent) = path.parent() {
+            let _ = std::fs::create_dir_all(parent);
+        }
         let _ = std::fs::write(path, now_secs().to_string());
     }
 }

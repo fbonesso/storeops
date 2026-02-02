@@ -26,13 +26,13 @@ impl GoogleClient {
         }
     }
 
-    fn headers(&self) -> HeaderMap {
+    fn headers(&self) -> Result<HeaderMap, Box<dyn std::error::Error>> {
         let mut h = HeaderMap::new();
         h.insert(
             AUTHORIZATION,
-            format!("Bearer {}", self.token).parse().unwrap(),
+            format!("Bearer {}", self.token).parse()?,
         );
-        h
+        Ok(h)
     }
 
     pub async fn get<T: DeserializeOwned>(
@@ -44,7 +44,7 @@ impl GoogleClient {
         let resp = self
             .client
             .get(&url)
-            .headers(self.headers())
+            .headers(self.headers()?)
             .query(query)
             .send()
             .await?;
@@ -65,7 +65,7 @@ impl GoogleClient {
         let resp = self
             .client
             .post(&url)
-            .headers(self.headers())
+            .headers(self.headers()?)
             .header("Content-Type", "application/json")
             .json(body)
             .send()
@@ -83,7 +83,7 @@ impl GoogleClient {
         let resp = self
             .client
             .put(&url)
-            .headers(self.headers())
+            .headers(self.headers()?)
             .header("Content-Type", "application/json")
             .json(body)
             .send()
@@ -101,7 +101,7 @@ impl GoogleClient {
         let resp = self
             .client
             .delete(&url)
-            .headers(self.headers())
+            .headers(self.headers()?)
             .send()
             .await?;
         let status = resp.status();
@@ -138,7 +138,7 @@ impl GoogleClient {
         let resp = self
             .client
             .post(&url)
-            .headers(self.headers())
+            .headers(self.headers()?)
             .header("Content-Type", content_type)
             .body(file_bytes)
             .send()
@@ -168,7 +168,7 @@ impl GoogleClient {
         let resp = self
             .client
             .post(&url)
-            .headers(self.headers())
+            .headers(self.headers()?)
             .header("Content-Type", "application/octet-stream")
             .body(file_bytes)
             .send()

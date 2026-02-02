@@ -136,7 +136,9 @@ pub async fn run_repl() {
     }
 
     if let Some(ref path) = history_path {
-        let _ = std::fs::create_dir_all(path.parent().unwrap());
+        if let Some(parent) = path.parent() {
+            let _ = std::fs::create_dir_all(parent);
+        }
         let _ = rl.save_history(path);
         #[cfg(unix)]
         {
