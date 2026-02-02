@@ -28,10 +28,7 @@ impl GoogleClient {
 
     fn headers(&self) -> Result<HeaderMap, Box<dyn std::error::Error>> {
         let mut h = HeaderMap::new();
-        h.insert(
-            AUTHORIZATION,
-            format!("Bearer {}", self.token).parse()?,
-        );
+        h.insert(AUTHORIZATION, format!("Bearer {}", self.token).parse()?);
         Ok(h)
     }
 

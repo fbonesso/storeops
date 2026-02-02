@@ -121,51 +121,25 @@ pub async fn execute(
     let client = crate::api::apple_client::AppleClient::new(token);
 
     match cmd {
-        AppleCommand::Apps { command } => {
-            apps::handle(command, &client, cli.limit).await
-        }
-        AppleCommand::Versions { command } => {
-            versions::handle(command, &client, cli.limit).await
-        }
-        AppleCommand::Builds { command } => {
-            builds::handle(command, &client, cli.limit).await
-        }
+        AppleCommand::Apps { command } => apps::handle(command, &client, cli.limit).await,
+        AppleCommand::Versions { command } => versions::handle(command, &client, cli.limit).await,
+        AppleCommand::Builds { command } => builds::handle(command, &client, cli.limit).await,
         AppleCommand::Testflight { command } => {
             testflight::handle(command, &client, cli.limit).await
         }
-        AppleCommand::Submit { app_id, version } => {
-            submit::handle(app_id, version, &client).await
-        }
-        AppleCommand::Reviews { command } => {
-            reviews::handle(command, &client, cli.limit).await
-        }
-        AppleCommand::Devices { command } => {
-            devices::handle(command, &client, cli.limit).await
-        }
-        AppleCommand::Analytics { command } => {
-            analytics::handle(command, &client).await
-        }
-        AppleCommand::Metadata { command } => {
-            metadata::handle(command, &client, cli.limit).await
-        }
+        AppleCommand::Submit { app_id, version } => submit::handle(app_id, version, &client).await,
+        AppleCommand::Reviews { command } => reviews::handle(command, &client, cli.limit).await,
+        AppleCommand::Devices { command } => devices::handle(command, &client, cli.limit).await,
+        AppleCommand::Analytics { command } => analytics::handle(command, &client).await,
+        AppleCommand::Metadata { command } => metadata::handle(command, &client, cli.limit).await,
         AppleCommand::Screenshots { command } => {
             screenshots::handle(command, &client, cli.limit).await
         }
-        AppleCommand::Previews { command } => {
-            previews::handle(command, &client, cli.limit).await
-        }
-        AppleCommand::Pricing { command } => {
-            pricing::handle(command, &client, cli.limit).await
-        }
-        AppleCommand::AgeRating { command } => {
-            age_rating::handle(command, &client).await
-        }
-        AppleCommand::PhasedRelease { command } => {
-            phased_release::handle(command, &client).await
-        }
-        AppleCommand::Iap { command } => {
-            iap::handle(command, &client, cli.limit).await
-        }
+        AppleCommand::Previews { command } => previews::handle(command, &client, cli.limit).await,
+        AppleCommand::Pricing { command } => pricing::handle(command, &client, cli.limit).await,
+        AppleCommand::AgeRating { command } => age_rating::handle(command, &client).await,
+        AppleCommand::PhasedRelease { command } => phased_release::handle(command, &client).await,
+        AppleCommand::Iap { command } => iap::handle(command, &client, cli.limit).await,
         AppleCommand::Subscriptions { command } => {
             subscriptions::handle(command, &client, cli.limit).await
         }
