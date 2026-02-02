@@ -67,3 +67,47 @@ pub enum GoogleCommand {
         command: availability::AvailabilityCommand,
     },
 }
+
+pub async fn execute(
+    cmd: &GoogleCommand,
+    cli: &crate::cli::Cli,
+) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+    let config = crate::config::Config::load()?;
+    let sa_path = crate::auth::store::resolve_google_credentials(&config, cli.profile.as_deref())?;
+    let token = crate::auth::google::get_access_token(&sa_path).await?;
+    let client = crate::api::google_client::GoogleClient::new(token);
+
+    match cmd {
+        GoogleCommand::Apps { command } => {
+            apps::handle(command, &client).await
+        }
+        GoogleCommand::Tracks { command } => {
+            tracks::handle(command, &client).await
+        }
+        GoogleCommand::Builds { command } => {
+            builds::handle(command, &client).await
+        }
+        GoogleCommand::Testers { command } => {
+            testers::handle(command, &client).await
+        }
+        GoogleCommand::Submit {
+            package_name,
+            track,
+        } => submit::handle(package_name, track, &client).await,
+        GoogleCommand::Reviews { command } => {
+            reviews::handle(command, &client).await
+        }
+        GoogleCommand::Listings { command } => {
+            listings::handle(command, &client).await
+        }
+        GoogleCommand::Images { command } => {
+            images::handle(command, &client).await
+        }
+        GoogleCommand::Inapp { command } => {
+            inapp::handle(command, &client).await
+        }
+        GoogleCommand::Availability { command } => {
+            availability::handle(command, &client).await
+        }
+    }
+}

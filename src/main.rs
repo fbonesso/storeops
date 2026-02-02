@@ -49,8 +49,8 @@ async fn main() {
 pub async fn run(cli: Cli) -> Result<Value, Box<dyn std::error::Error>> {
     match &cli.command {
         Some(Command::Auth { command }) => handle_auth(command).await,
-        Some(Command::Apple { command }) => handle_apple(command, &cli).await,
-        Some(Command::Google { command }) => handle_google(command, &cli).await,
+        Some(Command::Apple { command }) => cli::apple::execute(command, &cli).await,
+        Some(Command::Google { command }) => cli::google::execute(command, &cli).await,
         Some(Command::Update) => update::handle_update().await,
         None => Err("no command provided".into()),
     }
@@ -171,115 +171,6 @@ async fn handle_auth(cmd: &AuthCommand) -> Result<Value, Box<dyn std::error::Err
                 "profile": profile_name,
                 "message": "Credentials saved.",
             }))
-        }
-    }
-}
-
-async fn handle_apple(
-    cmd: &cli::apple::AppleCommand,
-    cli: &Cli,
-) -> Result<Value, Box<dyn std::error::Error>> {
-    let config = Config::load()?;
-    let (key_id, issuer_id, key_pem) =
-        auth::store::resolve_apple_credentials(&config, cli.profile.as_deref())?;
-    let token = auth::apple::generate_token(&key_id, &issuer_id, &key_pem)?;
-    let client = api::apple_client::AppleClient::new(token);
-
-    match cmd {
-        cli::apple::AppleCommand::Apps { command } => {
-            cli::apple::apps::handle(command, &client, cli.limit).await
-        }
-        cli::apple::AppleCommand::Versions { command } => {
-            cli::apple::versions::handle(command, &client, cli.limit).await
-        }
-        cli::apple::AppleCommand::Builds { command } => {
-            cli::apple::builds::handle(command, &client, cli.limit).await
-        }
-        cli::apple::AppleCommand::Testflight { command } => {
-            cli::apple::testflight::handle(command, &client, cli.limit).await
-        }
-        cli::apple::AppleCommand::Submit { app_id, version } => {
-            cli::apple::submit::handle(app_id, version, &client).await
-        }
-        cli::apple::AppleCommand::Reviews { command } => {
-            cli::apple::reviews::handle(command, &client, cli.limit).await
-        }
-        cli::apple::AppleCommand::Devices { command } => {
-            cli::apple::devices::handle(command, &client, cli.limit).await
-        }
-        cli::apple::AppleCommand::Analytics { command } => {
-            cli::apple::analytics::handle(command, &client).await
-        }
-        cli::apple::AppleCommand::Metadata { command } => {
-            cli::apple::metadata::handle(command, &client, cli.limit).await
-        }
-        cli::apple::AppleCommand::Screenshots { command } => {
-            cli::apple::screenshots::handle(command, &client, cli.limit).await
-        }
-        cli::apple::AppleCommand::Previews { command } => {
-            cli::apple::previews::handle(command, &client, cli.limit).await
-        }
-        cli::apple::AppleCommand::Pricing { command } => {
-            cli::apple::pricing::handle(command, &client, cli.limit).await
-        }
-        cli::apple::AppleCommand::AgeRating { command } => {
-            cli::apple::age_rating::handle(command, &client).await
-        }
-        cli::apple::AppleCommand::PhasedRelease { command } => {
-            cli::apple::phased_release::handle(command, &client).await
-        }
-        cli::apple::AppleCommand::Iap { command } => {
-            cli::apple::iap::handle(command, &client, cli.limit).await
-        }
-        cli::apple::AppleCommand::Subscriptions { command } => {
-            cli::apple::subscriptions::handle(command, &client, cli.limit).await
-        }
-        cli::apple::AppleCommand::Availability { command } => {
-            cli::apple::availability::handle(command, &client, cli.limit).await
-        }
-    }
-}
-
-async fn handle_google(
-    cmd: &cli::google::GoogleCommand,
-    cli: &Cli,
-) -> Result<Value, Box<dyn std::error::Error>> {
-    let config = Config::load()?;
-    let sa_path = auth::store::resolve_google_credentials(&config, cli.profile.as_deref())?;
-    let token = auth::google::get_access_token(&sa_path).await?;
-    let client = api::google_client::GoogleClient::new(token);
-
-    match cmd {
-        cli::google::GoogleCommand::Apps { command } => {
-            cli::google::apps::handle(command, &client).await
-        }
-        cli::google::GoogleCommand::Tracks { command } => {
-            cli::google::tracks::handle(command, &client).await
-        }
-        cli::google::GoogleCommand::Builds { command } => {
-            cli::google::builds::handle(command, &client).await
-        }
-        cli::google::GoogleCommand::Testers { command } => {
-            cli::google::testers::handle(command, &client).await
-        }
-        cli::google::GoogleCommand::Submit {
-            package_name,
-            track,
-        } => cli::google::submit::handle(package_name, track, &client).await,
-        cli::google::GoogleCommand::Reviews { command } => {
-            cli::google::reviews::handle(command, &client).await
-        }
-        cli::google::GoogleCommand::Listings { command } => {
-            cli::google::listings::handle(command, &client).await
-        }
-        cli::google::GoogleCommand::Images { command } => {
-            cli::google::images::handle(command, &client).await
-        }
-        cli::google::GoogleCommand::Inapp { command } => {
-            cli::google::inapp::handle(command, &client).await
-        }
-        cli::google::GoogleCommand::Availability { command } => {
-            cli::google::availability::handle(command, &client).await
         }
     }
 }
