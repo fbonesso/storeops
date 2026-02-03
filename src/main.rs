@@ -40,7 +40,10 @@ async fn main() {
         }
         Err(e) => {
             let err = json!({ "error": e.to_string() });
-            eprintln!("{}", serde_json::to_string(&err).unwrap());
+            eprintln!(
+                "{}",
+                serde_json::to_string(&err).unwrap_or_else(|_| format!("{{\"error\":\"{}\"}}", e))
+            );
             process::exit(1);
         }
     }
@@ -83,10 +86,12 @@ async fn handle_auth(cmd: &AuthCommand) -> Result<Value, Box<dyn std::error::Err
                 );
             }
             config.save()?;
-            let path = Config::config_path().unwrap();
+            let path = Config::config_path()
+                .map(|p| p.display().to_string())
+                .unwrap_or_else(|| "<unknown>".to_string());
             Ok(json!({
                 "status": "ok",
-                "config_path": path.display().to_string(),
+                "config_path": path,
                 "message": "Config template created. Edit the file to add your credentials."
             }))
         }
