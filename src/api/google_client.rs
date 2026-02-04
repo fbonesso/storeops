@@ -58,11 +58,7 @@ impl GoogleClient {
         let status = resp.status();
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!(
-                "Google API error {status}: {}",
-                truncate_error(&body)
-            )
-            .into());
+            return Err(format!("Google API error {status}: {}", truncate_error(&body)).into());
         }
         Ok(resp.json().await?)
     }
@@ -84,11 +80,7 @@ impl GoogleClient {
         let status = resp.status();
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!(
-                "Google API error {status}: {}",
-                truncate_error(&body)
-            )
-            .into());
+            return Err(format!("Google API error {status}: {}", truncate_error(&body)).into());
         }
         Ok(resp.json().await?)
     }
@@ -106,11 +98,7 @@ impl GoogleClient {
         let status = resp.status();
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!(
-                "Google API error {status}: {}",
-                truncate_error(&body)
-            )
-            .into());
+            return Err(format!("Google API error {status}: {}", truncate_error(&body)).into());
         }
         Ok(resp.json().await?)
     }
@@ -129,11 +117,7 @@ impl GoogleClient {
         }
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
-            return Err(format!(
-                "Google API error {status}: {}",
-                truncate_error(&body)
-            )
-            .into());
+            return Err(format!("Google API error {status}: {}", truncate_error(&body)).into());
         }
         Ok(resp
             .json()
