@@ -602,10 +602,12 @@ async fn handle_push(
     }
 
     // Commit the edit
+    // Use changesNotSentForReview=true to allow commits when managed publishing is enabled
+    // or when the app is in a state that doesn't allow automatic review submission
     eprintln!("Committing changes...");
     client
         .post(
-            &format!("/{package_name}/edits/{edit_id}:commit"),
+            &format!("/{package_name}/edits/{edit_id}:commit?changesNotSentForReview=true"),
             &json!({}),
         )
         .await?;
