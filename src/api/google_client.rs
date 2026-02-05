@@ -32,6 +32,7 @@ impl GoogleClient {
     }
 
     /// Create a client with a shared `reqwest::Client` (for connection pooling).
+    #[allow(dead_code)]
     pub fn with_client(client: Arc<reqwest::Client>, token: String) -> Self {
         Self { client, token }
     }
