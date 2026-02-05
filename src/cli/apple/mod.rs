@@ -13,6 +13,7 @@ pub mod reviews;
 pub mod screenshots;
 pub mod submit;
 pub mod subscriptions;
+pub mod sync;
 pub mod testflight;
 pub mod versions;
 
@@ -108,6 +109,11 @@ pub enum AppleCommand {
         #[command(subcommand)]
         command: availability::AvailabilityCommand,
     },
+    /// Sync metadata and screenshots (bulk pull/push)
+    Sync {
+        #[command(subcommand)]
+        command: sync::SyncCommand,
+    },
 }
 
 pub async fn execute(
@@ -146,5 +152,6 @@ pub async fn execute(
         AppleCommand::Availability { command } => {
             availability::handle(command, &client, cli.limit).await
         }
+        AppleCommand::Sync { command } => sync::handle(command, &client, cli.limit).await,
     }
 }

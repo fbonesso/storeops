@@ -112,9 +112,17 @@ impl GoogleClient {
             .send()
             .await?;
         let status = resp.status();
+
+        // 204 No Content is success for DELETE
         if status == reqwest::StatusCode::NO_CONTENT {
             return Ok(serde_json::json!({"status": "deleted"}));
         }
+
+        // 404 Not Found is also fine for a "clean" operation - it means nothing was there to delete
+        if status == reqwest::StatusCode::NOT_FOUND {
+            return Ok(serde_json::json!({"status": "already_clean"}));
+        }
+
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
             return Err(format!("Google API error {status}: {}", truncate_error(&body)).into());
@@ -134,7 +142,7 @@ impl GoogleClient {
         file_path: &str,
     ) -> Result<Value, Box<dyn std::error::Error>> {
         let url = format!(
-            "https://androidpublisher.googleapis.com/upload/androidpublisher/v3/applications/{package_name}/edits/{edit_id}/listings/{locale}/{image_type}"
+            "https://androidpublisher.googleapis.com/upload/androidpublisher/v3/applications/{package_name}/edits/{edit_id}/listings/{locale}/{image_type}?uploadType=media"
         );
         let file_bytes = tokio::fs::read(file_path).await?;
         let content_type = if file_path.ends_with(".png") {
@@ -154,7 +162,7 @@ impl GoogleClient {
         if !status.is_success() {
             let body = resp.text().await.unwrap_or_default();
             return Err(format!(
-                "Google API upload error {status}: {}",
+                "Google API upload error {status}: {} (URL: {url})",
                 truncate_error(&body)
             )
             .into());

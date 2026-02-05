@@ -6,6 +6,7 @@ pub mod inapp;
 pub mod listings;
 pub mod reviews;
 pub mod submit;
+pub mod sync;
 pub mod testers;
 pub mod tracks;
 
@@ -66,6 +67,11 @@ pub enum GoogleCommand {
         #[command(subcommand)]
         command: availability::AvailabilityCommand,
     },
+    /// Sync metadata and screenshots (bulk pull/push)
+    Sync {
+        #[command(subcommand)]
+        command: sync::SyncCommand,
+    },
 }
 
 pub async fn execute(
@@ -91,5 +97,6 @@ pub async fn execute(
         GoogleCommand::Images { command } => images::handle(command, &client).await,
         GoogleCommand::Inapp { command } => inapp::handle(command, &client).await,
         GoogleCommand::Availability { command } => availability::handle(command, &client).await,
+        GoogleCommand::Sync { command } => sync::handle(command, &client).await,
     }
 }
