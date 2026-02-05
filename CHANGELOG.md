@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-02-05
+
+### Added
+
+- **Sync commands** for bulk metadata and screenshot operations:
+  - `apple sync pull/push` - Pull/push App Store metadata (name, subtitle, description, keywords, release notes, URLs) and screenshots across all locales
+  - `google sync pull/push` - Pull/push Play Store listings (title, descriptions, video) and images across all locales
+  - Locale mapping between internal format and store-specific formats
+  - `--urls-only` mode to get screenshot URLs without downloading
+  - Auto-detection of editable version state for Apple (creates new version if needed)
+
+### Changed
+
+- Use `Arc<reqwest::Client>` for connection pooling in API clients
+- Default to table output format, added `--json` flag for JSON output
+
+### Fixed
+
+- Replace `unwrap()` calls with graceful fallbacks in main.rs
+- Improved error handling throughout
+
 ## [0.1.0] - 2026-01-29
 
 ### Added
