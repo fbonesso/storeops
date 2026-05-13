@@ -750,7 +750,7 @@ async fn handle_push(
                     attrs["supportUrl"] = json!(v);
                 }
 
-                if let Some(loc_id) = version_loc_map.get(&asc_locale) {
+                if let Some(loc_id) = version_loc_map.get(&asc_locale).cloned() {
                     // Update existing
                     let body = json!({
                         "data": {
@@ -759,16 +759,106 @@ async fn handle_push(
                             "attributes": attrs
                         }
                     });
-                    if let Err(e) = client
+                    match client
                         .patch(&format!("/appStoreVersionLocalizations/{loc_id}"), &body)
                         .await
                     {
-                        eprintln!(
-                            "  Warning: Could not update version localization for {}: {}",
-                            asc_locale, e
-                        );
-                    } else {
-                        eprintln!("  Updated version localization");
+                        Ok(_) => eprintln!("  Updated version localization"),
+                        Err(e) => {
+                            let error = e.to_string();
+                            if error.contains("409 Conflict") {
+                                let mut updated_without_release_notes = false;
+                                if attrs.get("whatsNew").is_some() {
+                                    let mut retry_attrs = attrs.clone();
+                                    if let Some(obj) = retry_attrs.as_object_mut() {
+                                        obj.remove("whatsNew");
+                                    }
+                                    let retry_body = json!({
+                                        "data": {
+                                            "type": "appStoreVersionLocalizations",
+                                            "id": loc_id,
+                                            "attributes": retry_attrs
+                                        }
+                                    });
+                                    match client
+                                        .patch(
+                                            &format!("/appStoreVersionLocalizations/{loc_id}"),
+                                            &retry_body,
+                                        )
+                                        .await
+                                    {
+                                        Ok(_) => {
+                                            eprintln!(
+                                                "  Updated version localization without release notes"
+                                            );
+                                            updated_without_release_notes = true;
+                                        }
+                                        Err(retry_error) => {
+                                            eprintln!(
+                                                "  Release notes retry still failed for {}: {}",
+                                                asc_locale, retry_error
+                                            );
+                                        }
+                                    }
+                                }
+                                if !updated_without_release_notes {
+                                    eprintln!(
+                                        "  Replacing version localization for {} after conflict",
+                                        asc_locale
+                                    );
+                                    if let Err(delete_error) = client
+                                        .delete(&format!("/appStoreVersionLocalizations/{loc_id}"))
+                                        .await
+                                    {
+                                        eprintln!(
+                                            "  Warning: Could not delete conflicted version localization for {}: {}",
+                                            asc_locale, delete_error
+                                        );
+                                    } else {
+                                        let mut create_attrs = attrs.clone();
+                                        create_attrs["locale"] = json!(asc_locale);
+                                        let create_body = json!({
+                                            "data": {
+                                                "type": "appStoreVersionLocalizations",
+                                                "attributes": create_attrs,
+                                                "relationships": {
+                                                    "appStoreVersion": {
+                                                        "data": {
+                                                            "type": "appStoreVersions",
+                                                            "id": version_id
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
+                                        match client.post("/appStoreVersionLocalizations", &create_body).await {
+                                            Ok(result) => {
+                                                if let Some(id) = result["data"]["id"].as_str() {
+                                                    version_loc_map.insert(
+                                                        asc_locale.clone(),
+                                                        id.to_string(),
+                                                    );
+                                                } else {
+                                                    version_loc_map.remove(&asc_locale);
+                                                }
+                                                eprintln!("  Replaced version localization");
+                                            }
+                                            Err(create_error) => {
+                                                eprintln!(
+                                                    "  Warning: Could not recreate version localization for {}: {}",
+                                                    asc_locale, create_error
+                                                );
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                eprintln!(
+                                    "  Warning: Could not update version localization for {}: {}",
+                                    asc_locale, e
+                                );
+                            }
+                        }
                     }
                 } else {
                     // Create new

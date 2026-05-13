@@ -605,12 +605,29 @@ async fn handle_push(
     // Use changesNotSentForReview=true to allow commits when managed publishing is enabled
     // or when the app is in a state that doesn't allow automatic review submission
     eprintln!("Committing changes...");
-    client
+    match client
         .post(
             &format!("/{package_name}/edits/{edit_id}:commit?changesNotSentForReview=true"),
             &json!({}),
         )
-        .await?;
+        .await
+    {
+        Ok(_) => {}
+        Err(e) => {
+            let error = e.to_string();
+            if error.contains("changesNotSentForReview must not be set") {
+                eprintln!("Commit rejected changesNotSentForReview flag; retrying without it...");
+                client
+                    .post(
+                        &format!("/{package_name}/edits/{edit_id}:commit"),
+                        &json!({}),
+                    )
+                    .await?;
+            } else {
+                return Err(e);
+            }
+        }
+    };
 
     eprintln!("COMMIT SUCCESSFUL.");
     Ok(json!({
