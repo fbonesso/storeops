@@ -831,13 +831,14 @@ async fn handle_push(
                                                 }
                                             }
                                         });
-                                        match client.post("/appStoreVersionLocalizations", &create_body).await {
+                                        match client
+                                            .post("/appStoreVersionLocalizations", &create_body)
+                                            .await
+                                        {
                                             Ok(result) => {
                                                 if let Some(id) = result["data"]["id"].as_str() {
-                                                    version_loc_map.insert(
-                                                        asc_locale.clone(),
-                                                        id.to_string(),
-                                                    );
+                                                    version_loc_map
+                                                        .insert(asc_locale.clone(), id.to_string());
                                                 } else {
                                                     version_loc_map.remove(&asc_locale);
                                                 }
